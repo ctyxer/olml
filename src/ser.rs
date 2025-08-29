@@ -228,7 +228,7 @@ impl<'a> ser::Serializer for &'a mut Serializer {
     ) -> std::result::Result<Self::SerializeTupleVariant, Self::Error> {
         self.output += "{";
         variant.serialize(&mut *self)?;
-        self.output += ":[";
+        self.output += ":{";
         Ok(self)
     }
 
@@ -412,7 +412,7 @@ impl<'a> ser::SerializeTupleVariant for &'a mut Serializer {
     where
         T: ?Sized + Serialize,
     {
-        if !self.output.ends_with('[') {
+        if !self.output.ends_with('{') {
             self.output += " ";
         }
 
@@ -421,7 +421,7 @@ impl<'a> ser::SerializeTupleVariant for &'a mut Serializer {
 
     #[inline]
     fn end(self) -> Result<()> {
-        self.output += "]}";
+        self.output += "}}";
         Ok(())
     }
 }
@@ -544,7 +544,7 @@ mod test {
 
         let v = E::S("Dp".to_owned(), 47);
 
-        assert_eq!("{\"S\":[\"Dp\" 47]}", to_string(&v).unwrap());
+        assert_eq!("{\"S\":{\"Dp\" 47}}", to_string(&v).unwrap());
     }
 
     #[test]
