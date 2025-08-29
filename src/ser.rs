@@ -214,7 +214,7 @@ impl<'a> ser::Serializer for &'a mut Serializer {
         _name: &'static str,
         _len: usize,
     ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
-        self.output += "{[";
+        self.output += "{";
         Ok(self)
     }
 
@@ -436,7 +436,7 @@ impl<'a> ser::SerializeTupleStruct for &mut Serializer {
     where
         T: ?Sized + Serialize,
     {
-        if !self.output.ends_with('[') {
+        if !self.output.ends_with('{') {
             self.output += ",";
         }
         value.serialize(&mut **self)
@@ -444,7 +444,7 @@ impl<'a> ser::SerializeTupleStruct for &mut Serializer {
 
     #[inline]
     fn end(self) -> Result<()> {
-        self.output += "]}";
+        self.output += "}";
         Ok(())
     }
 }
@@ -532,7 +532,7 @@ mod test {
 
         let v = S(47, "Dp".to_owned());
 
-        assert_eq!("{[47,\"Dp\"]}", to_string(&v).unwrap());
+        assert_eq!("{47,\"Dp\"}", to_string(&v).unwrap());
     }
 
     #[test]
